@@ -1,0 +1,7 @@
+
+barman_repo_fingerprint: "68C9 E2B9 1A37 D136 FE74 D176 1F16 D2E1 442D F0F8"
+barman_repo_download: https://ftp.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+barman_repo_rpm: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+barman_server_config_files_directory: "/etc/barman.d/"
+barman_global_configuration_file: "/etc/barman.conf"
+barman_global_configuration: []

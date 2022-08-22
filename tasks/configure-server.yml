@@ -1,0 +1,55 @@
+---
+
+- name: Configuring server
+  debug:
+    msg: "Configuration for {{ _server.name }}"
+
+- name: Barman per server configuration
+  ini_file:
+    section: "{{ _server.name }}"
+    option: "{{ i.key }}"
+    value: "{{ i.value }}"
+    dest: "{{ barman_server_config_files_directory }}/{{ _server.name }}.conf"
+    mode: 0644
+  with_dict: "{{ _server.settings }}"
+  loop_control:
+    loop_var: i
+
+#- name: Create slot for Barman
+#  shell: "/usr/bin/barman receive-wal --create-slot {{ _server.name }}"
+#  become_user: "{{ barman_user }}"
+#  register: slot_result
+#  failed_when:
+#  when:
+#  - _server.settings.backup_method == "postgres"
+
+- name: check status
+  command: "/usr/bin/barman check {{ _server.name }}"
+  ignore_errors: yes
+  changed_when: False
+  become_user: "{{ barman_user }}"
+  register: check_output
+
+#The first time always seems to fail, also it takes a little bit for the cron job to kick off
+- name: verify WAL archive process
+  command: "/usr/bin/barman switch-xlog --force --archive --archive-timeout 30 {{ _server.name }}"
+  register: result
+  until: result.rc == 0
+  retries: 3
+  delay: 30
+  become_user: "{{ barman_user }}"
+  when:
+  - '"FAILED (please make sure WAL shipping is setup)" in check_output.stdout'
+
+- name: Create cron job for backups
+  cron:
+    user: "{{ barman_user }}"
+    name: "barman backup server {{ _server.name }}"
+    cron_file: barman
+    job: "barman backup {{ _server.name }} >> {{ barman_log_directory }}/{{ _server.name }}.log"
+    state: present
+    minute: "{{ 60 | random(seed=inventory_hostname) }}"
+    hour: "{{ 5 | random(seed=inventory_hostname) }}"
+    day: "*"
+    month: "*"
+    weekday: "*"

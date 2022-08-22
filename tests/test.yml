@@ -1,0 +1,5 @@
+---
+- hosts: lab
+  become: True
+  roles:
+  - role: coffeesprout.barman

@@ -1,0 +1,19 @@
+---
+# defaults file for coffeesprout.barman
+
+postgresql_version: 14
+barman_user: barman
+
+barman_config_directory: "/etc/barman.d"
+barman_server_config_files: "{{ barman_config_directory }}"
+barman_home: "/user/barman"
+barman_log_directory: "/var/log/barman"
+
+barman_server: []
+
+barman_default_global_configuration:
+      streaming_archiver: "on"
+      immediate_checkpoint: "True"
+      path_prefix: "/usr/pgsql-{{ postgresql_version }}/bin"
+      backup_compression: "gzip"
+      create_slot: "auto"

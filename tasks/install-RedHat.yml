@@ -1,0 +1,25 @@
+---
+
+- name: install PostgreSQL GPG key
+  rpm_key:
+    state: present
+    key: "{{ barman_repo_download }}"
+    fingerprint: "{{ barman_repo_fingerprint }}"
+- name: disable RHEL postgresql as dnf module
+  command: dnf module disable -y postgresql
+  register: result
+  changed_when:
+  - '"Disabling module streams" in result.stdout'
+- name: install PostgresQL repository
+  yum:
+    name: "{{ barman_repo_rpm }}"
+    state: present
+- name: install barman
+  package:
+    name: barman
+    state: present
+- name: install PostgreSQL
+  package:
+    name:
+    - "postgresql{{ postgresql_version }}"
+    - "postgresql{{ postgresql_version }}-server"

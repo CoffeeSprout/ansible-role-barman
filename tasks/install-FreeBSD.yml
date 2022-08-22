@@ -1,0 +1,6 @@
+---
+
+- name: install databases/pgbarman
+  package:
+    name: postgresql14-client,databases/pgbarman
+    state: present

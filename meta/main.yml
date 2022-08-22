@@ -1,0 +1,23 @@
+galaxy_info:
+  author: Barry van Someren
+  description: Setup Barman and enable backups of PostgreSQL servers
+  company: CoffeeSprout ICT Services
+
+  license: BSD
+
+  min_ansible_version: 2.9
+
+  platforms:
+  - name: EL
+    versions:
+    - all
+  - name: FreeBSD
+    versions:
+    - all
+
+  galaxy_tags:
+  - pgbarman
+  - barman
+  - postgresql
+
+dependencies: []
