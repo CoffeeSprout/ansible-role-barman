@@ -14,28 +14,16 @@ The database requires 2 users, please follow the manual: https://docs.pgbarman.o
 Role Variables
 --------------
 
-    postgresql_version: 14
+Here are the variables available to configure the role:
 
-Barman requires the PostgreSQL client and sometimes server binaries. This specifies the default.
-We generally target the latest, but keep in mind that streaming replication only works within the major version of the server (IE you can only backup PostgreSQL 10 with 10) See: https://www.postgresql.org/docs/current/warm-standby.html#STANDBY-PLANNING
-
-    barman_user: barman
-
-The user under which barman runs
-
-    barman_config_directory: "/etc/barman.d"
-
-Where the server configs are stored usually overriden by platform vars
-
-    barman_home: "/user/barman"
-
-The barman home folder, usually overwritten by platform vars
-
-    barman_log_directory: "/var/log/barman"
-
-Where the cron and barman log are stored
-
-    barman_server: []
+- `postgresql_version`: Barman requires the PostgreSQL client and sometimes server binaries. This specifies the default. We generally target the latest, but keep in mind that streaming replication only works within the major version of the server (i.e., you can only backup PostgreSQL 10 with 10). See: https://www.postgresql.org/docs/current/warm-standby.html#STANDBY-PLANNING
+- `barman_user`: The user under which Barman runs.
+- `barman_config_directory`: The directory where the server configs are stored, usually overridden by platform vars.
+- `barman_home`: The Barman home folder, usually overwritten by platform vars.
+- `barman_log_directory`: The directory where the cron and Barman logs are stored.
+- `barman_server`: A list of dictionaries containing Barman configurations. See example below.
+- `barman_default_global_configuration`: A dictionary containing default settings.
+- `barman_global_configuration`: Settings in this dictionary overwrite the `barman_default_global_configuration`.
 
 A list of dictionaries containing barman configurations; See example below
 
