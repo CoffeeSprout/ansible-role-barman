@@ -1,6 +1,6 @@
 ---
 
-- name: install databases/pgbarman
-  package:
+- name: Install databases/pgbarman
+  ansible.builtin.package:
     name: postgresql14-client,databases/pgbarman
     state: present

@@ -1,37 +1,37 @@
 ---
 # tasks file for coffeesprout.barman
 
-- name: include OS Specific vars
-  include_vars: "{{ item }}"
+- name: Include OS Specific vars
+  ansible.builtin.include_vars: "{{ item }}"
   with_first_found:
-  - "{{ ansible_os_family }}.yml"
-  - main.yml
+    - "{{ ansible_os_family }}.yml"
+    - main.yml
 
-- include_tasks: "install-{{ ansible_os_family }}.yml"
+- ansible.builtin.include_tasks: "install-{{ ansible_os_family }}.yml"
   tags:
-  - install
+    - install
 
 - name: Barman Global configuration
-  ini_file:
+  community.general.ini_file:
     section: "barman"
     option: "{{ item.key }}"
     value: "{{ item.value }}"
     dest: "{{ barman_global_configuration_file }}"
-    mode: 0644
+    mode: '0644'
   with_dict: "{{ barman_default_global_configuration | combine(barman_global_configuration) }}"
 
 - name: Create server configurations
-  include_tasks: configure-server.yml
+  ansible.builtin.include_tasks: configure-server.yml
   vars:
     _server: "{{ item }}"
   with_items: "{{ barman_server_configuration }}"
   tags:
-  - configure
-  - server
+    - configure
+    - server
 
-#By default 
+# By default
 - name: Ensure minutely cronjob for Barman
-  cron:
+  ansible.builtin.cron:
     user: "{{ barman_user }}"
     name: "barman cron"
     cron_file: barman
@@ -43,4 +43,3 @@
     day: "{{ barman_cron_schedule.day | default(omit) }}"
     month: "{{ barman_cron_schedule.month | default(omit) }}"
     weekday: "{{ barman_cron_schedule.weekday | default(omit) }}"
-

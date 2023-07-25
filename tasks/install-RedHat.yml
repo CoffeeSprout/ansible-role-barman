@@ -1,25 +1,29 @@
 ---
 
-- name: install PostgreSQL GPG key
-  rpm_key:
+- name: Install PostgreSQL GPG key
+  ansible.builtin.rpm_key:
     state: present
     key: "{{ barman_repo_download }}"
     fingerprint: "{{ barman_repo_fingerprint }}"
-- name: disable RHEL postgresql as dnf module
-  command: dnf module disable -y postgresql
+
+- name: Disable RHEL postgresql as dnf module
+  ansible.builtin.command: dnf module disable -y postgresql
   register: result
   changed_when:
-  - '"Disabling module streams" in result.stdout'
-- name: install PostgresQL repository
-  yum:
+    - '"Disabling module streams" in result.stdout'
+
+- name: Install PostgresQL repository
+  ansible.builtin.yum:
     name: "{{ barman_repo_rpm }}"
     state: present
-- name: install barman
-  package:
+
+- name: Install barman
+  ansible.builtin.package:
     name: barman
     state: present
-- name: install PostgreSQL
-  package:
+
+- name: Install PostgreSQL
+  ansible.builtin.package:
     name:
-    - "postgresql{{ postgresql_version }}"
-    - "postgresql{{ postgresql_version }}-server"
+      - "postgresql{{ postgresql_version }}"
+      - "postgresql{{ postgresql_version }}-server"

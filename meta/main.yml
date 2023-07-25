@@ -1,4 +1,6 @@
 galaxy_info:
+  role_name: barman
+  namespace: coffeesprout
   author: Barry van Someren
   description: Setup Barman and enable backups of PostgreSQL servers
   company: CoffeeSprout ICT Services
@@ -8,16 +10,16 @@ galaxy_info:
   min_ansible_version: 2.9
 
   platforms:
-  - name: EL
-    versions:
-    - all
-  - name: FreeBSD
-    versions:
-    - all
+    - name: EL
+      versions:
+        - all
+    - name: FreeBSD
+      versions:
+        - all
 
   galaxy_tags:
-  - pgbarman
-  - barman
-  - postgresql
+    - pgbarman
+    - barman
+    - postgresql
 
 dependencies: []

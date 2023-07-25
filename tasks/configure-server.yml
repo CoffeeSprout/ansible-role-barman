@@ -1,48 +1,48 @@
 ---
 
 - name: Configuring server
-  debug:
+  ansible.builtin.debug:
     msg: "Configuration for {{ _server.name }}"
 
 - name: Barman per server configuration
-  ini_file:
+  community.general.ini_file:
     section: "{{ _server.name }}"
     option: "{{ i.key }}"
     value: "{{ i.value }}"
     dest: "{{ barman_server_config_files_directory }}/{{ _server.name }}.conf"
-    mode: 0644
+    mode: '0644'
   with_dict: "{{ _server.settings }}"
   loop_control:
     loop_var: i
 
-#- name: Create slot for Barman
-#  shell: "/usr/bin/barman receive-wal --create-slot {{ _server.name }}"
-#  become_user: "{{ barman_user }}"
-#  register: slot_result
-#  failed_when:
-#  when:
-#  - _server.settings.backup_method == "postgres"
+ # - name: Create slot for Barman
+ #  ansible.builtin.shell: "/usr/bin/barman receive-wal --create-slot {{ _server.name }}"
+ #  become_user: "{{ barman_user }}"
+ #  register: slot_result
+ #  failed_when:
+ #  when:
+ #  - _server.settings.backup_method == "postgres"
 
-- name: check status
-  command: "/usr/bin/barman check {{ _server.name }}"
-  ignore_errors: yes
-  changed_when: False
+- name: Check status
+  ansible.builtin.command: "/usr/bin/barman check {{ _server.name }}"
+  ignore_errors: true
+  changed_when: false
   become_user: "{{ barman_user }}"
   register: check_output
 
-#The first time always seems to fail, also it takes a little bit for the cron job to kick off
-- name: verify WAL archive process
-  command: "/usr/bin/barman switch-xlog --force --archive --archive-timeout 30 {{ _server.name }}"
+ # The first time always seems to fail, also it takes a little bit for the cron job to kick off
+- name: Verify WAL archive process
+  ansible.builtin.command: "/usr/bin/barman switch-xlog --force --archive --archive-timeout 30 {{ _server.name }}"
   register: result
   until: result.rc == 0
   retries: 3
   delay: 30
   become_user: "{{ barman_user }}"
   when:
-  - '"FAILED (please make sure WAL shipping is setup)" in check_output.stdout'
+    - '"FAILED (please make sure WAL shipping is setup)" in check_output.stdout'
 
 - name: Create cron job for backups
-  cron:
+  ansible.builtin.cron:
     user: "{{ barman_user }}"
     name: "barman backup server {{ _server.name }}"
     cron_file: barman

@@ -1,4 +1,3 @@
-
 barman_server_config_files_directory: "/usr/local/etc/barman.d/"
 barman_global_configuration_file: "/usr/local/etc/barman.conf"
 barman_global_configuration: []
